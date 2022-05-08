@@ -2,9 +2,11 @@ import React, { useMemo } from "react";
 
 import "./styles/tile.css";
 
+import { LETTER_STATUS_ENUM } from "../../utils/constants/letter";
+
 interface TileProps {
   value: string;
-  type?: "wrong" | "wrong-location" | "correct";
+  type?: LETTER_STATUS_ENUM;
   isActive?: boolean;
 }
 

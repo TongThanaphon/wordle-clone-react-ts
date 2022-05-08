@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 import "./styles/index.css";
 
@@ -9,7 +9,23 @@ interface AlertProps {
 const Alert: React.FC<AlertProps> = (props) => {
   const { message } = props;
 
-  return <div>{message}</div>;
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (ref.current && message) {
+      ref.current.classList.add("alert");
+
+      setTimeout(() => {
+        ref.current?.classList.add("hide");
+
+        ref.current?.addEventListener("transitionend", () => {
+          ref.current?.remove();
+        });
+      }, 1000);
+    }
+  }, [message]);
+
+  return <div ref={ref}>{message}</div>;
 };
 
 export default Alert;

@@ -4,8 +4,21 @@ import "./styles/alert-container.css";
 
 import Alert from ".";
 
-const AlertContainer = () => {
-  return <div className="container">{/* <Alert message="Test" /> */}</div>;
+interface AlertContainerProps {
+  messages: string[];
+}
+
+const AlertContainer: React.FC<AlertContainerProps> = (props) => {
+  const { messages } = props;
+
+  return (
+    <div className="container">
+      {messages.length !== 0 &&
+        messages.map((message, index) => (
+          <Alert key={`${message}-${index}`} message={message} />
+        ))}
+    </div>
+  );
 };
 
 export default AlertContainer;

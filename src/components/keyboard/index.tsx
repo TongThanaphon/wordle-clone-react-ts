@@ -1,31 +1,102 @@
-import React from "react";
+import React, { useEffect, useCallback } from "react";
 
 import "./styles/index.css";
 
 import { UPPER_ROW, MIDDLE_ROW, LOWER_ROW } from "../../utils/constants/keys";
+import { ILetterStatus } from "../../utils/interfaces/letter";
 
-const Keyboard = () => {
+interface KeyboardProps {
+  lettersStatus?: ILetterStatus;
+  onSubmit: () => void;
+  onDeleteKey: () => void;
+  onPressKey: (key: string) => void;
+}
+
+const Keyboard: React.FC<KeyboardProps> = (props) => {
+  const { onSubmit, onDeleteKey, onPressKey, lettersStatus } = props;
+
+  const handleClickKey = (key: string) => {
+    const value = key.toLowerCase();
+
+    if (value === "enter") {
+      onSubmit();
+
+      return;
+    } else if (value === "delete") {
+      onDeleteKey();
+
+      return;
+    } else if (value.match(/^[a-z]$/)) {
+      onPressKey(value);
+
+      return;
+    }
+  };
+
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      const value = event.key;
+
+      if (value === "Enter") {
+        onSubmit();
+
+        return;
+      } else if (value === "Backspace" || value === "Delete") {
+        onDeleteKey();
+
+        return;
+      } else if (value.match(/^[a-z]$/)) {
+        onPressKey(value);
+
+        return;
+      }
+    },
+    [onSubmit, onDeleteKey, onPressKey]
+  );
+
+  useEffect(() => {
+    document.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleKeyDown]);
+
   return (
     <div className="keyboard">
       {UPPER_ROW.map((key) => (
-        <button key={key} className="key">
+        <button
+          key={key}
+          className={`key ${(lettersStatus && lettersStatus[key]) || "idel"}`}
+          onClick={() => handleClickKey(key)}
+        >
           {key}
         </button>
       ))}
       <div></div>
       {MIDDLE_ROW.map((key) => (
-        <button key={key} className="key">
+        <button
+          key={key}
+          className={`key ${(lettersStatus && lettersStatus[key]) || "idel"}`}
+          onClick={() => handleClickKey(key)}
+        >
           {key}
         </button>
       ))}
       <div></div>
-      <button className="key large">Enter</button>
+      <button className="key large" onClick={() => handleClickKey("enter")}>
+        Enter
+      </button>
       {LOWER_ROW.map((key) => (
-        <button key={key} className="key">
+        <button
+          key={key}
+          className={`key ${(lettersStatus && lettersStatus[key]) || "idel"}`}
+          onClick={() => handleClickKey(key)}
+        >
           {key}
         </button>
       ))}
-      <button className="key large">
+      <button className="key large" onClick={() => handleClickKey("delete")}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           height="24"
