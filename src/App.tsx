@@ -23,7 +23,7 @@ const App = () => {
   const handleSubmit = () => {
     if (round === -1) return;
 
-    const len = (tiles && tiles[round].length) || 0;
+    const len = tiles?.[round]?.length || 0;
 
     if (len !== COLUMNS) {
       setMessages((prev) => [...prev, "Not enough letters"]);

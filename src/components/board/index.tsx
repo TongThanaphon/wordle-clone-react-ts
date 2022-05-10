@@ -31,7 +31,14 @@ const Board: React.FC<BoardProps> = (props) => {
           const letter = (tiles && tiles[ri]?.[ci]) || "";
           const type = (tilesStatus && tilesStatus[`${ri}${ci}`]) || undefined;
 
-          return <Tile key={`${ri}${ci}`} value={letter} type={type} />;
+          return (
+            <Tile
+              key={`${ri}${ci}`}
+              value={letter}
+              type={type}
+              isActive={!!letter}
+            />
+          );
         });
       })}
     </div>
