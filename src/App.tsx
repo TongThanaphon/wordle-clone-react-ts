@@ -5,9 +5,13 @@ import Keyboard from "./components/keyboard";
 import Board from "./components/board";
 import AlertContainer from "./components/alert/AlertContainer";
 
-import { COLUMNS, ROWS } from "./utils/constants/board";
-import { ITile, ILetterStatus } from "./utils/interfaces/letter";
-import { LETTER_STATUS_ENUM } from "./utils/constants/letter";
+import { COLUMNS, ROWS, EnumTileAnimation } from "./utils/constants/board";
+import {
+  ITile,
+  ILetterStatus,
+  ITileAnimation,
+} from "./utils/interfaces/letter";
+import { LETTER_STATUS_ENUM } from "./utils/constants/keys";
 
 import targetWords from "./utils/data/target-wrods";
 import dictionary from "./utils/data/dictionary";
@@ -16,6 +20,7 @@ const App = () => {
   const [targetWord, setTargetWord] = useState<string>("");
   const [tiles, setTiles] = useState<ITile>();
   const [tilesStatus, setTilesStatus] = useState<ILetterStatus>();
+  const [tilesAnimation, setTilesAnimation] = useState<ITileAnimation>();
   const [lettersStatus, setLettersStatus] = useState<ILetterStatus>();
   const [round, setRound] = useState<number>(0);
   const [messages, setMessages] = useState<string[]>([]);
@@ -27,6 +32,14 @@ const App = () => {
 
     if (len !== COLUMNS) {
       setMessages((prev) => [...prev, "Not enough letters"]);
+
+      tiles &&
+        tiles[round].forEach((_, index) => {
+          setTilesAnimation((prev) => ({
+            ...prev,
+            [`${round}${index}`]: EnumTileAnimation.SHAKE,
+          }));
+        });
 
       return;
     }
@@ -135,7 +148,11 @@ const App = () => {
   return (
     <AppLayout>
       <AlertContainer messages={messages} />
-      <Board tiles={tiles} tilesStatus={tilesStatus} />
+      <Board
+        tiles={tiles}
+        tilesStatus={tilesStatus}
+        tilesAnimation={tilesAnimation}
+      />
       <Keyboard
         lettersStatus={lettersStatus}
         onDeleteKey={handleDeleteKey}
